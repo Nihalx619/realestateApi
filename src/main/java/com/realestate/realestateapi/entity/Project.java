@@ -9,6 +9,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import java.util.List;
 
 @Entity
 @Table(name = "projects")
@@ -35,6 +38,25 @@ public class Project {
 	private String status;
 	
 	private LocalDate possessionDate;
+	
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+	private List<Image> images;
+
+	public List<Image> getImages() {
+		return images;
+	}
+
+	public void setImages(List<Image> images) {
+		this.images = images;
+	}
+
+	public List<Configuration> getConfigurations() {
+		return configurations;
+	}
+
+	public void setConfigurations(List<Configuration> configurations) {
+		this.configurations = configurations;
+	}
 
 	public Long getId() {
 		return id;
@@ -108,5 +130,7 @@ public class Project {
 		this.possessionDate = possessionDate;
 	}
 	
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+	private List<Configuration> configurations;
 
 }
