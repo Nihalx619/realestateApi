@@ -132,5 +132,7 @@ public class Project {
 	
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	private List<Configuration> configurations;
-
+    
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+	private List<Enquiry> enquiries;
 }
