@@ -1,5 +1,5 @@
 package com.realestate.realestateapi.service;
-
+import com.realestate.realestateapi.exception.ResourceNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +30,7 @@ public class ImageService {
 
 	public ImageDto getImageById(Long id) {
 
-		Image image = imageRepository.findById(id).orElseThrow(() -> new RuntimeException("Image not found"));
+		Image image = imageRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Image not found"));
 		return mapToDto(image);
 	}
 
@@ -41,14 +41,14 @@ public class ImageService {
 	}
 
 	public ImageDto updateImage(Long id, ImageDto dto) {
-		Image existing = imageRepository.findById(id).orElseThrow(() -> new RuntimeException("Image not found"));
+		Image existing = imageRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Image not found"));
 		Image updated = mapToImage(dto);
 		updated.setId(existing.getId());
 		return mapToDto(imageRepository.save(updated));
 	}
 
 	public void deleteImage(Long id) {
-		Image image = imageRepository.findById(id).orElseThrow(() -> new RuntimeException("Image not found"));
+		Image image = imageRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Image not found"));
 		imageRepository.delete(image);
 	}
 
@@ -70,7 +70,7 @@ public class ImageService {
 		image.setCaption(dto.getCaption());
 		image.setPrimary(dto.isPrimary());
 		Project project = projectRepository.findById(dto.getProjectId())
-				.orElseThrow(() -> new RuntimeException("Project not found"));
+				.orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 		image.setProject(project);
 		return image;
 	}

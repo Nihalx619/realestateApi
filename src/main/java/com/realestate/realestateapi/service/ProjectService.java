@@ -1,5 +1,5 @@
 package com.realestate.realestateapi.service;
-
+import com.realestate.realestateapi.exception.ResourceNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class ProjectService {
 	}
 
 	public ProjectDto getProjectById(Long id) {
-		Project project = projectRepository.findById(id).orElseThrow(() -> new RuntimeException("Project not found"));
+		Project project = projectRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 		return mapToProjectDto(project);
 	}
 
@@ -43,7 +43,7 @@ public class ProjectService {
 
 	public ProjectDto updateProject(Long id, ProjectDto projectDto) {
 		Project existingProject = projectRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Project not found"));
+				.orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
 		Project updatedProject = maptoProject(projectDto);
 		updatedProject.setId(existingProject.getId());
@@ -53,7 +53,7 @@ public class ProjectService {
 	}
 	
 	public void deleteProject(Long id) {
-          Project project = projectRepository.findById(id).orElseThrow(() -> new RuntimeException("Project not found"));
+          Project project = projectRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Project not found"));
           projectRepository.delete(project);
 	}
 

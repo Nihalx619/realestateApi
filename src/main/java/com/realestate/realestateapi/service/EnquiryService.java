@@ -1,5 +1,5 @@
 package com.realestate.realestateapi.service;
-
+import com.realestate.realestateapi.exception.ResourceNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +52,7 @@ public class EnquiryService {
 	public EnquiryDto updateEnquiryStatus(Long id, String status) {
 	    // your code here
 		
-		Enquiry enquiry = enquiryRepository.findById(id).orElseThrow(() -> new RuntimeException("Enquiry not found"));
+		Enquiry enquiry = enquiryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Enquiry not found"));
 		
 		enquiry.setStatus(status);
 		return mapToDto(enquiryRepository.save(enquiry));
@@ -92,7 +92,7 @@ public class EnquiryService {
 	    enquiry.setEmail(dto.getEmail());
 	    enquiry.setMessage(dto.getMessage());
 	    Project project = projectRepository.findById(dto.getProjectId())
-	            .orElseThrow(() -> new RuntimeException("Project not found"));
+	            .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 	    enquiry.setProject(project);
 	    return enquiry;
 	}

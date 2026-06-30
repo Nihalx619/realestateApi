@@ -26,36 +26,37 @@ public class SecurityConfig {
         this.agentDetailsService = agentDetailsService;
         this.jwtFilter = jwtFilter;
     }
+    
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> 
+            .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // PUBLIC endpoints — anyone can access
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", 
-                                 "/swagger-ui.html").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/projects/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/configurations/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/images/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/enquiries").permitAll()
-                // EVERYTHING ELSE requires a valid JWT token
-                .anyRequest().authenticated()
-            )
+            	    .requestMatchers("/api/auth/**").permitAll()
+            	    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+            	    .requestMatchers(HttpMethod.POST, "/api/enquiries").permitAll()
+            	    .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+            	    // writes require auth (method-only matchers, which we proved work)
+            	    .requestMatchers(HttpMethod.POST).authenticated()
+            	    .requestMatchers(HttpMethod.PUT).authenticated()
+            	    .requestMatchers(HttpMethod.DELETE).authenticated()
+            	    .requestMatchers(HttpMethod.PATCH).authenticated()
+            	    // everything else (all GETs) is public
+            	    .anyRequest().permitAll()
+            	)
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
-
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
     @Bean
     @SuppressWarnings("deprecation")
     public AuthenticationProvider authenticationProvider() {
@@ -64,6 +65,7 @@ public class SecurityConfig {
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
+
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config) throws Exception {

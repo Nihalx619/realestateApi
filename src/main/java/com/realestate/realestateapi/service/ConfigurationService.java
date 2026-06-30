@@ -1,5 +1,5 @@
 package com.realestate.realestateapi.service;
-
+import com.realestate.realestateapi.exception.ResourceNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +31,7 @@ public class ConfigurationService {
 
 	public ConfigurationDto getConfigurationById(Long id) {
 		Configuration configuration = configurationRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("configuration not found"));
+				.orElseThrow(() -> new ResourceNotFoundException("configuration not found"));
 		return mapToDto(configuration);
 	}
 
@@ -43,7 +43,7 @@ public class ConfigurationService {
 	}
 
 	public ConfigurationDto updateConfiguration(Long id, ConfigurationDto dto) {
-       Configuration existingConfiguration = configurationRepository.findById(id).orElseThrow(() -> new RuntimeException("configuration not found") );
+       Configuration existingConfiguration = configurationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("configuration not found") );
        Configuration updatedConfiguration = mapToConfiguration(dto);
        updatedConfiguration.setId(existingConfiguration.getId());
        
@@ -56,7 +56,7 @@ public class ConfigurationService {
 
 	public void deleteConfiguration(Long id) {
 	    Configuration configuration = configurationRepository.findById(id)
-	            .orElseThrow(() -> new RuntimeException("Configuration not found"));
+	            .orElseThrow(() -> new ResourceNotFoundException("Configuration not found"));
 	    configurationRepository.delete(configuration);
 	}
 
@@ -77,7 +77,7 @@ public class ConfigurationService {
 		configuration.setPrice(dto.getPrice());
 
 		Project project = projectRepository.findById(dto.getProjectId())
-				.orElseThrow(() -> new RuntimeException("Project not found"));
+				.orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 		configuration.setProject(project);
 
 		return configuration;
