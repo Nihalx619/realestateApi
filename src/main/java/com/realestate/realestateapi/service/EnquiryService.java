@@ -17,19 +17,24 @@ public class EnquiryService {
 	
 	private final EnquiryRepository enquiryRepository;
 	private final ProjectRepository projectRepository;
+	private final EmailService emailService;
 
-	public EnquiryService(EnquiryRepository enquiryRepository, ProjectRepository projectRepository) {
+	public EnquiryService(EnquiryRepository enquiryRepository, 
+	                      ProjectRepository projectRepository,
+	                      EmailService emailService) {
 	    this.enquiryRepository = enquiryRepository;
 	    this.projectRepository = projectRepository;
+	    this.emailService = emailService;
 	}
 	
 	public EnquiryDto createEnquiry(EnquiryDto dto) {
+	    Enquiry enquiry = mapToEnquiry(dto);
+	    Enquiry savedEnquiry = enquiryRepository.save(enquiry);
 	    
-		Enquiry enquiry = mapToEnquiry(dto);
-		Enquiry savedEnquiry = enquiryRepository.save(enquiry);
-		
-		return mapToDto(savedEnquiry);
-		
+	    // send notification email (won't crash if it fails)
+	    emailService.sendEnquiryNotification(savedEnquiry);
+	    
+	    return mapToDto(savedEnquiry);
 	}
 
 	public List<EnquiryDto> getAllEnquiries() {
