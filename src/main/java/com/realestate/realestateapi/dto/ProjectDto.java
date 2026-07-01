@@ -2,16 +2,28 @@ package com.realestate.realestateapi.dto;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class ProjectDto {
 
 	private Long id;
+
+	@NotBlank(message = "Project name is required")
 	private String name;
+
+	@NotBlank(message = "Builder is required")
 	private String builder;
+
+	@NotBlank(message = "Locality is required")
 	private String locality;
+
 	private String videoUrl;
 	private String description;
 	private String reraNumber;
+
+	@NotBlank(message = "Status is required")
 	private String status;
+
 	private LocalDate possessionDate;
 
 	public Long getId() {

@@ -42,12 +42,12 @@ public class ProjectController {
     }
     
     @PostMapping
-    public ResponseEntity<ProjectDto> createProject(@RequestBody ProjectDto projectDto) {
+    public ResponseEntity<ProjectDto> createProject(@Valid @RequestBody ProjectDto projectDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(projectService.createProject(projectDto));
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<ProjectDto> updateProject(@PathVariable Long id, @RequestBody ProjectDto projectDto) {
+    public ResponseEntity<ProjectDto> updateProject(@PathVariable Long id,@Valid @RequestBody ProjectDto projectDto) {
         return ResponseEntity.ok(projectService.updateProject(id, projectDto));
     }
     

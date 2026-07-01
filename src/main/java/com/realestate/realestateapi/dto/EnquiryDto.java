@@ -2,11 +2,18 @@ package com.realestate.realestateapi.dto;
 
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class EnquiryDto {
 
 	private Long id;
 	private Long projectId;
+	
+	
+	@NotBlank(message = "Name is required")
 	private String name;
+	
+	@NotBlank(message = "Phone number is required")
 	private String phone;
 	private String email;
 	private String message;

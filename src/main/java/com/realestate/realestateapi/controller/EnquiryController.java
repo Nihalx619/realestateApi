@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.realestate.realestateapi.dto.EnquiryDto;
 import com.realestate.realestateapi.service.EnquiryService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/enquiries")
 public class EnquiryController {
@@ -28,7 +30,7 @@ public class EnquiryController {
     }
 
     @PostMapping
-    public ResponseEntity<EnquiryDto> create(@RequestBody EnquiryDto dto) {
+    public ResponseEntity<EnquiryDto> create(@Valid @RequestBody EnquiryDto dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(enquiryService.createEnquiry(dto));
     }
 
