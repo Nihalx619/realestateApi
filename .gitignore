@@ -7,4 +7,3 @@ target/
 .project
 .vscode
 bin/
-src/main/resources/application.properties
