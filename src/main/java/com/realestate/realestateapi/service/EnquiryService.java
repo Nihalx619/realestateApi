@@ -80,7 +80,7 @@ public class EnquiryService {
 	private EnquiryDto mapToDto(Enquiry enquiry) {
 	    EnquiryDto dto = new EnquiryDto();
 	    dto.setId(enquiry.getId());
-	    dto.setProjectId(enquiry.getProject().getId());
+	    dto.setProjectId(enquiry.getProject() != null ? enquiry.getProject().getId() : null);
 	    dto.setName(enquiry.getName());
 	    dto.setPhone(enquiry.getPhone());
 	    dto.setEmail(enquiry.getEmail());
@@ -96,9 +96,11 @@ public class EnquiryService {
 	    enquiry.setPhone(dto.getPhone());
 	    enquiry.setEmail(dto.getEmail());
 	    enquiry.setMessage(dto.getMessage());
-	    Project project = projectRepository.findById(dto.getProjectId())
-	            .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
-	    enquiry.setProject(project);
+	    if (dto.getProjectId() != null) {
+	        Project project = projectRepository.findById(dto.getProjectId())
+	                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+	        enquiry.setProject(project);
+	    }
 	    return enquiry;
 	}
 }

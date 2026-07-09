@@ -38,7 +38,7 @@ public class Enquiry {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false)
+    @JoinColumn(name = "project_id")
     private Project project;
 
     @PrePersist
