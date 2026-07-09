@@ -22,17 +22,21 @@ public class EmailService {
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
-    
+
     @Async
     public void sendEnquiryNotification(Enquiry enquiry) {
         try {
+            String projectName = enquiry.getProject() != null
+                    ? enquiry.getProject().getName()
+                    : "General Enquiry";
+
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
             message.setTo(notificationEmail);
-            message.setSubject("New Enquiry: " + enquiry.getProject().getName());
+            message.setSubject("New Enquiry: " + projectName);
             message.setText(
                 "You have a new enquiry!\n\n" +
-                "Project: " + enquiry.getProject().getName() + "\n" +
+                "Project: " + projectName + "\n" +
                 "Name: " + enquiry.getName() + "\n" +
                 "Phone: " + enquiry.getPhone() + "\n" +
                 "Email: " + (enquiry.getEmail() != null ? enquiry.getEmail() : "Not provided") + "\n" +
