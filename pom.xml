@@ -54,8 +54,7 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Test: JUnit 5, Mockito, AssertJ, Spring Test (one starter covers
-		all) -->
+		<!-- Test: JUnit 5, Mockito, AssertJ, Spring Test (one starter covers all) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -91,6 +90,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
+
 	</dependencies>
 
 

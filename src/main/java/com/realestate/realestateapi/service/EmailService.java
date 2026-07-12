@@ -1,17 +1,22 @@
 package com.realestate.realestateapi.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.realestate.realestateapi.entity.Enquiry;
 
 @Service
 public class EmailService {
 
-    private final JavaMailSender mailSender;
+    private static final String BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
 
     @Value("${app.notification.email}")
     private String notificationEmail;
@@ -19,9 +24,10 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
-    public EmailService(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
-    }
+    @Value("${brevo.api.key}")
+    private String brevoApiKey;
+
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Async
     public void sendEnquiryNotification(Enquiry enquiry) {
@@ -30,11 +36,7 @@ public class EmailService {
                     ? enquiry.getProject().getName()
                     : "General Enquiry";
 
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(notificationEmail);
-            message.setSubject("New Enquiry: " + projectName);
-            message.setText(
+            String body =
                 "You have a new enquiry!\n\n" +
                 "Project: " + projectName + "\n" +
                 "Name: " + enquiry.getName() + "\n" +
@@ -42,11 +44,25 @@ public class EmailService {
                 "Email: " + (enquiry.getEmail() != null ? enquiry.getEmail() : "Not provided") + "\n" +
                 "Message: " + (enquiry.getMessage() != null ? enquiry.getMessage() : "None") + "\n\n" +
                 "Received at: " + enquiry.getCreatedAt() + "\n\n" +
-                "Log in to the admin panel to follow up."
+                "Log in to the admin panel to follow up.";
+
+            Map<String, Object> payload = Map.of(
+                "sender", Map.of("email", fromEmail, "name", "MG Realty"),
+                "to", List.of(Map.of("email", notificationEmail)),
+                "subject", "New Enquiry: " + projectName,
+                "textContent", body
             );
-            mailSender.send(message);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("api-key", brevoApiKey);
+            headers.set("accept", "application/json");
+
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
+            restTemplate.postForObject(BREVO_API_URL, request, String.class);
+
+            System.out.println("Enquiry notification email sent to " + notificationEmail);
         } catch (Exception e) {
-            // if email fails, don't crash the enquiry — it's already saved in DB
             System.err.println("Failed to send enquiry notification email: " + e.getMessage());
         }
     }
